@@ -1,6 +1,3 @@
-Yes — here is the **entire CSS**, with the hero title centering fix included at the end. Replace your current `style.css` with this:
-
-```css
 @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500;6..96,700;6..96,900&family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 :root{
@@ -669,15 +666,30 @@ body.paper-page{background:var(--paper);color:var(--ink)}
 }
 
 /* ==========================================================
-   FORCE HERO TITLE TO STAY EXACTLY CENTERED
+   FIXED CENTER HERO TITLE + SUBTLE FLOAT
+   The title stays centered and only moves a few pixels.
    ========================================================== */
-
-.moodboard-hero .mb-title-wrap{
-  left:50% !important;
-  top:50% !important;
-  transform:translate(-50%,-50%) !important;
-  margin:0 !important;
+.moodboard-hero .mb-title-wrap {
+  left: 50% !important;
+  top: 50% !important;
+  margin: 0 !important;
+  transform: translate(-50%, -50%) !important;
+  animation: mbTitleFloat 5s ease-in-out infinite !important;
+  will-change: transform;
 }
-```
 
-The important fix is the **very last section**. It forces the `YOUR NAME` title container to stay exactly in the center even if another rule or JavaScript tries to move it.
+@keyframes mbTitleFloat {
+  0%, 100% {
+    transform: translate(-50%, -50%) !important;
+  }
+  50% {
+    transform: translate(-50%, calc(-50% - 6px)) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .moodboard-hero .mb-title-wrap {
+    animation: none !important;
+    transform: translate(-50%, -50%) !important;
+  }
+}
