@@ -265,7 +265,8 @@ body.paper-page{background:var(--paper);color:var(--ink)}
   position:absolute;z-index:8;background:#fff;padding:8px 8px 31px;border:2px solid var(--ink);
   box-shadow:7px 8px 0 var(--ink);will-change:transform;transform-origin:center;
   --mx:0px;--my:0px;--rot:0deg;
-  transform:translate3d(calc(var(--mx) + var(--mb-float-x)),calc(var(--my) + var(--mb-float-y)),0) rotate(var(--rot));
+  transform:translate3d(var(--mx),var(--my),0) rotate(var(--rot));
+  translate:var(--mb-float-x) var(--mb-float-y);
   transition:box-shadow .35s var(--ease),filter .35s var(--ease);
 }
 .mb-card:hover{z-index:12;box-shadow:11px 12px 0 var(--ink);filter:saturate(1.15)}
