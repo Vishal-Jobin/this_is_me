@@ -57,19 +57,36 @@ document.addEventListener('DOMContentLoaded', () => {
   if (hero && cards.length && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     let targetX = 0, targetY = 0;
     let currentX = 0, currentY = 0;
-    let inside = false;
+    let pointerX = 0, pointerY = 0;
+    let currentPX = 0, currentPY = 0;
     let raf = 0;
 
-    const render = () => {
-      currentX += (targetX - currentX) * 0.075;
-      currentY += (targetY - currentY) * 0.075;
+    const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 
-      cards.forEach(card => {
+    const render = () => {
+      currentX += (targetX - currentX) * 0.065;
+      currentY += (targetY - currentY) * 0.065;
+      currentPX += (pointerX - currentPX) * 0.07;
+      currentPY += (pointerY - currentPY) * 0.07;
+
+      cards.forEach((card, index) => {
         const depth = Number(card.dataset.parallax || 0.1);
         const x = currentX * depth;
         const y = currentY * depth;
+
+        // Tiny depth-based tilt, kept deliberately bounded to avoid jitter.
+        const tiltX = clamp(currentPY * depth * -0.075, -3.2, 3.2);
+        const tiltY = clamp(currentPX * depth * 0.075, -3.2, 3.2);
+
         card.style.setProperty('--mx', `${x.toFixed(2)}px`);
         card.style.setProperty('--my', `${y.toFixed(2)}px`);
+        card.style.setProperty('--tilt-x', `${tiltX.toFixed(2)}deg`);
+        card.style.setProperty('--tilt-y', `${tiltY.toFixed(2)}deg`);
+
+        // Each card gets a slightly different response for a layered collage feel.
+        const phase = index % 3;
+        const localLift = phase === 0 ? 1 : phase === 1 ? -0.7 : 0.45;
+        card.style.setProperty('--scale', (1 + Math.abs(depth) * 0.012 * localLift).toFixed(4));
       });
 
       raf = requestAnimationFrame(render);
@@ -80,23 +97,23 @@ document.addEventListener('DOMContentLoaded', () => {
       const px = (event.clientX - rect.left) / rect.width;
       const py = (event.clientY - rect.top) / rect.height;
 
-      // Keep the movement intentionally small and bounded.
-      targetX = Math.max(-34, Math.min(34, (px - 0.5) * 68));
-      targetY = Math.max(-26, Math.min(26, (py - 0.5) * 52));
-      inside = true;
+      targetX = clamp((px - 0.5) * 78, -39, 39);
+      targetY = clamp((py - 0.5) * 60, -30, 30);
+
+      pointerX = clamp((px - 0.5) * 100, -50, 50);
+      pointerY = clamp((py - 0.5) * 100, -50, 50);
     };
 
     hero.addEventListener('pointermove', updatePointer, { passive: true });
-    hero.addEventListener('pointerenter', () => { inside = true; }, { passive: true });
+
     hero.addEventListener('pointerleave', () => {
-      inside = false;
       targetX = 0;
       targetY = 0;
+      pointerX = 0;
+      pointerY = 0;
     }, { passive: true });
 
-    // Keep the animation loop running so the return-to-center is smooth.
     raf = requestAnimationFrame(render);
-
     window.addEventListener('beforeunload', () => cancelAnimationFrame(raf), { once: true });
   }
 
