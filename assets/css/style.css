@@ -63,8 +63,8 @@ button{font:inherit;background:none;border:0;color:inherit;cursor:pointer}
 .hero{position:relative;min-height:100vh;padding-top:125px;overflow:hidden;background:var(--paper)}
 .hero::before{content:"01 / VISUAL ARCHIVE";position:absolute;top:105px;left:var(--gutter);font:500 10px var(--mono);letter-spacing:.12em}
 .hero::after{content:"SCROLL / KEEP LOOKING ↓";position:absolute;right:var(--gutter);bottom:30px;font:500 10px var(--mono);letter-spacing:.1em;transform:rotate(-90deg);transform-origin:right bottom}
-.hero-scene{position:relative;min-height:calc(100vh - 125px);display:flex;align-items:center}
-.hero-title{position:relative;z-index:5;margin:0 0 80px 6vw;font:400 clamp(64px,11.5vw,190px)/.78 var(--display);letter-spacing:-.065em;text-transform:uppercase;max-width:9ch}
+.hero-scene{position:relative;min-height:calc(100vh - 125px);display:flex;align-items:center;justify-content:center}
+.hero-title{position:relative;z-index:5;margin:0 0 80px 0;font:400 clamp(64px,11.5vw,190px)/.78 var(--display);letter-spacing:-.065em;text-transform:uppercase;max-width:9ch}
 .hero-title .line{display:block;width:max-content;max-width:100%;color:var(--ink);-webkit-text-stroke:2px var(--ink);text-shadow:9px 10px 0 var(--paper)}
 .hero-title .line:nth-child(1){transform:rotate(-2deg);margin-left:-.1em}
 .hero-title .line:nth-child(2){color:var(--orange);-webkit-text-stroke:2px var(--ink);transform:translateX(.12em) rotate(1deg);text-shadow:10px 11px 0 var(--ink)}
@@ -109,8 +109,8 @@ button{font:inherit;background:none;border:0;color:inherit;cursor:pointer}
 .cap span{font:10px var(--mono);text-transform:uppercase;color:var(--muted);text-align:right}
 
 /* -------------------- photography -------------------- */
-.photo-grid{display:grid;grid-template-columns:repeat(2,minmax(0,180px));justify-content:center;gap:clamp(16px,3vw,28px);align-items:start;max-width:400px;margin-inline:auto}
-.photo-grid .ph{position:relative;cursor:pointer;max-width:180px;width:100%;justify-self:center}
+.photo-grid{display:grid;grid-template-columns:repeat(2,minmax(0,360px));justify-content:center;gap:clamp(22px,4vw,50px);align-items:start;max-width:800px;margin-inline:auto}
+.photo-grid .ph{position:relative;cursor:pointer}
 .photo-grid .ph img{width:100%;height:100%;object-fit:cover;border:2px solid var(--ink);box-shadow:7px 8px 0 var(--ink);transition:.45s var(--ease)}
 .photo-grid .ph:hover img{transform:translate(-5px,-6px) rotate(-1deg);box-shadow:12px 13px 0 var(--ink)}
 .ph-a{transform:rotate(-1.5deg)}
@@ -118,7 +118,7 @@ button{font:inherit;background:none;border:0;color:inherit;cursor:pointer}
 .ph-c{transform:rotate(1.5deg)}
 .ph-d{transform:rotate(-2deg);margin-top:45px}
 .ph-e{transform:rotate(1deg)}
-.ph-full{grid-column:1/-1;transform:rotate(-.7deg);margin-top:25px;max-width:180px;width:100%;justify-self:center}
+.ph-full{grid-column:1/-1;transform:rotate(-.7deg);margin-top:35px;max-width:700px;width:100%;justify-self:center}
 .photo-grid .ph-full img{aspect-ratio:2.4/1}
 .photo-series{padding-block:40px 100px;border-top:2px solid var(--ink)}
 .series-head{display:grid;grid-template-columns:110px 1fr 1.2fr;gap:25px;align-items:start;margin-bottom:45px}
@@ -211,7 +211,7 @@ body.paper-page{background:var(--paper);color:var(--ink)}
   .hero-chip-a{width:43vw;right:5%;top:10%;transform:rotate(6deg)}.hero-sticker{right:0;bottom:20%}
   .hero-foot{bottom:18px;display:block}.hero-foot p{max-width:300px;margin-bottom:12px}
   .section-head{display:block}.section-head h2{margin-bottom:20px}
-  .photo-grid{grid-template-columns:1fr;max-width:200px}.photo-grid .ph{max-width:180px}.ph-b,.ph-d{margin-top:0}.ph-full{grid-column:auto;max-width:180px}.photo-grid .ph-full img{aspect-ratio:1.35/1}
+  .photo-grid{grid-template-columns:1fr}.ph-b,.ph-d{margin-top:0}.ph-full{grid-column:auto}.photo-grid .ph-full img{aspect-ratio:1.35/1}
   .series-head{display:block}.series-head h3{margin:12px 0 15px}.series-head p{max-width:38ch}
   .page-hero{padding-top:130px}.page-hero h1{font-size:clamp(55px,16vw,100px)}
   .about-body{grid-template-columns:1fr}.stat-grid{grid-template-columns:1fr 1fr}.stat-grid>div:nth-child(2){border-right:0}.stat-grid>div:nth-child(-n+2){border-bottom:1px solid var(--ink)}
