@@ -42,10 +42,10 @@ button{font:inherit;background:none;border:0;color:inherit;cursor:pointer}
 
 /* -------------------- header -------------------- */
 .site-header{position:fixed;z-index:200;top:0;left:0;right:0;padding:18px var(--gutter);display:flex;align-items:center;justify-content:space-between;mix-blend-mode:multiply}
-.site-header .brand{font:700 17px/1 var(--body);letter-spacing:-.03em;display:flex;align-items:flex-start;gap:9px}
-.site-header .brand small{font:500 9px/1.15 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);max-width:110px}
-.nav-desktop{display:flex;gap:1.7em;align-items:center;font:500 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase}
-.nav-desktop a{padding:7px 9px;border:1px solid transparent;transition:.25s var(--ease)}
+.site-header .brand{font:700 clamp(18px,1.35vw,22px)/1 var(--body);letter-spacing:-.04em;display:flex;align-items:flex-start;gap:11px}
+.site-header .brand small{font:500 10px/1.08 var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);max-width:125px}
+.nav-desktop{display:flex;gap:clamp(12px,1.6vw,28px);align-items:center;font:500 clamp(12px,1vw,14px)/1 var(--mono);letter-spacing:.07em;text-transform:uppercase}
+.nav-desktop a{padding:10px 11px;border:1px solid transparent;border-radius:999px;transition:.25s var(--ease)}
 .nav-desktop a:hover,.nav-desktop a[aria-current="page"]{background:var(--ink);color:var(--paper);border-color:var(--ink);transform:rotate(-2deg)}
 .nav-toggle{display:none;width:32px;gap:5px;flex-direction:column}
 .nav-toggle span{height:2px;background:var(--ink);width:100%}
@@ -225,6 +225,9 @@ body.paper-page{background:var(--paper);color:var(--ink)}
 /* ========================================================================
    MOODBOARD HOMEPAGE — collage / editorial / art-school energy
    ======================================================================== */
+@property --mb-float-x { syntax: '<length>'; inherits: false; initial-value: 0px; }
+@property --mb-float-y { syntax: '<length>'; inherits: false; initial-value: 0px; }
+
 .moodboard-hero{
   min-height:100svh;
   height:clamp(760px,100svh,1050px);
@@ -235,16 +238,20 @@ body.paper-page{background:var(--paper);color:var(--ink)}
   border-bottom:2px solid var(--ink);
 }
 .moodboard-meta,.mb-bottom-left,.mb-bottom-right{
-  position:absolute;z-index:30;font:500 9px/1 var(--mono);letter-spacing:.13em;text-transform:uppercase;
+  position:absolute;z-index:30;font:500 11px/1.15 var(--mono);letter-spacing:.13em;text-transform:uppercase;
 }
 .mb-meta-left{top:104px;left:var(--gutter)}
 .mb-meta-right{top:104px;right:var(--gutter)}
 .mb-bottom-left{left:var(--gutter);bottom:23px}
 .mb-bottom-right{right:var(--gutter);bottom:23px}
+
+/* The title is deliberately the top visual layer. Cards can move underneath it,
+   but never over it. */
 .mb-title-wrap{
-  position:absolute;z-index:15;left:50%;top:50%;transform:translate(-50%,-50%);width:min(760px,70vw);text-align:center;pointer-events:none;
+  position:absolute;z-index:60;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:min(780px,72vw);text-align:center;pointer-events:none;
 }
-.mb-kicker{font:500 10px/1 var(--mono);letter-spacing:.28em;margin-bottom:18px}
+.mb-kicker{font:500 12px/1 var(--mono);letter-spacing:.28em;margin-bottom:20px}
 .mb-title{
   font:400 clamp(92px,15vw,220px)/.73 var(--display);letter-spacing:-.085em;text-transform:uppercase;
   color:var(--ink);margin:0;position:relative;text-shadow:10px 12px 0 var(--paper),12px 14px 0 var(--ink);
@@ -252,38 +259,48 @@ body.paper-page{background:var(--paper);color:var(--ink)}
 .mb-title span{display:block}
 .mb-title span:first-child{transform:translateX(-.08em) rotate(-2deg)}
 .mb-title span:last-child{color:var(--orange);-webkit-text-stroke:2px var(--ink);transform:translateX(.07em) rotate(1.5deg);text-shadow:8px 9px 0 var(--ink)}
-.mb-subtitle{display:inline-block;margin-top:25px;background:var(--ink);color:var(--paper);padding:8px 12px;font:500 10px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;transform:rotate(-2deg)}
+.mb-subtitle{display:inline-block;margin-top:27px;background:var(--ink);color:var(--paper);padding:10px 15px;font:500 11px/1 var(--mono);letter-spacing:.13em;text-transform:uppercase;transform:rotate(-2deg)}
+
 .mb-card{
-  position:absolute;z-index:8;background:#fff;padding:8px 8px 29px;border:2px solid var(--ink);box-shadow:7px 8px 0 var(--ink);will-change:transform;transition:box-shadow .35s var(--ease),filter .35s var(--ease);transform-origin:center;
+  position:absolute;z-index:8;background:#fff;padding:8px 8px 31px;border:2px solid var(--ink);
+  box-shadow:7px 8px 0 var(--ink);will-change:transform;transform-origin:center;
+  --mx:0px;--my:0px;--rot:0deg;
+  transform:translate3d(calc(var(--mx) + var(--mb-float-x)),calc(var(--my) + var(--mb-float-y)),0) rotate(var(--rot));
+  transition:box-shadow .35s var(--ease),filter .35s var(--ease);
 }
-.mb-card:hover{z-index:25;box-shadow:13px 14px 0 var(--ink);filter:saturate(1.15)}
+.mb-card:hover{z-index:12;box-shadow:11px 12px 0 var(--ink);filter:saturate(1.15)}
 .mb-card-image{overflow:hidden;background:#ddd;border:1px solid var(--ink)}
 .mb-card img{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease)}
 .mb-card:hover img{transform:scale(1.06)}
-.mb-card-note{position:absolute;left:10px;bottom:8px;font:500 8px/1 var(--mono);letter-spacing:.09em;text-transform:uppercase}
-.mb-card-a{width:min(220px,18vw);left:8%;top:20%;transform:rotate(-8deg)}
-.mb-card-a .mb-card-image{aspect-ratio:4/5}
-.mb-card-b{width:min(245px,20vw);left:21%;top:9%;transform:rotate(4deg)}
-.mb-card-b .mb-card-image{aspect-ratio:1.25/1}
-.mb-card-c{width:min(205px,17vw);right:9%;top:18%;transform:rotate(7deg)}
-.mb-card-c .mb-card-image{aspect-ratio:4/5}
-.mb-card-d{width:min(250px,21vw);right:22%;bottom:11%;transform:rotate(-5deg)}
-.mb-card-d .mb-card-image{aspect-ratio:1.25/1}
-.mb-card-e{width:min(195px,16vw);left:8%;bottom:10%;transform:rotate(5deg)}
-.mb-card-e .mb-card-image{aspect-ratio:4/5}
-.mb-card-f{width:min(225px,19vw);right:7%;bottom:21%;transform:rotate(-7deg)}
-.mb-card-f .mb-card-image{aspect-ratio:1.25/1}
-.mb-sticker{position:absolute;z-index:22;width:100px;height:100px;border-radius:50%;display:grid;place-items:center;text-align:center;border:2px solid var(--ink);font:700 10px/1.15 var(--mono);letter-spacing:.06em;text-transform:uppercase;box-shadow:5px 6px 0 var(--ink)}
+.mb-card-note{position:absolute;left:10px;bottom:9px;font:500 10px/1 var(--mono);letter-spacing:.09em;text-transform:uppercase}
+
+/* Small, continuous breathing motion. It is intentionally subtle so the collage
+   feels alive even when the cursor is still. */
+.mb-card-a{width:min(220px,18vw);left:8%;top:20%;--rot:-8deg;animation:mbFloatA 6.8s ease-in-out infinite}
+.mb-card-b{width:min(245px,20vw);left:21%;top:9%;--rot:4deg;animation:mbFloatB 7.6s ease-in-out infinite}
+.mb-card-c{width:min(205px,17vw);right:9%;top:18%;--rot:7deg;animation:mbFloatC 7.1s ease-in-out infinite}
+.mb-card-d{width:min(250px,21vw);right:22%;bottom:11%;--rot:-5deg;animation:mbFloatD 8.1s ease-in-out infinite}
+.mb-card-e{width:min(195px,16vw);left:8%;bottom:10%;--rot:5deg;animation:mbFloatE 7.4s ease-in-out infinite}
+.mb-card-f{width:min(225px,19vw);right:7%;bottom:21%;--rot:-7deg;animation:mbFloatF 8.4s ease-in-out infinite}
+@keyframes mbFloatA{0%,100%{--mb-float-x:0px;--mb-float-y:0px}50%{--mb-float-x:-5px;--mb-float-y:7px}}
+@keyframes mbFloatB{0%,100%{--mb-float-x:0px;--mb-float-y:0px}50%{--mb-float-x:6px;--mb-float-y:-5px}}
+@keyframes mbFloatC{0%,100%{--mb-float-x:0px;--mb-float-y:0px}50%{--mb-float-x:-5px;--mb-float-y:-7px}}
+@keyframes mbFloatD{0%,100%{--mb-float-x:0px;--mb-float-y:0px}50%{--mb-float-x:6px;--mb-float-y:6px}}
+@keyframes mbFloatE{0%,100%{--mb-float-x:0px;--mb-float-y:0px}50%{--mb-float-x:-6px;--mb-float-y:-5px}}
+@keyframes mbFloatF{0%,100%{--mb-float-x:0px;--mb-float-y:0px}50%{--mb-float-x:5px;--mb-float-y:7px}}
+
+.mb-card-a .mb-card-image,.mb-card-c .mb-card-image,.mb-card-e .mb-card-image{aspect-ratio:4/5}
+.mb-card-b .mb-card-image,.mb-card-d .mb-card-image,.mb-card-f .mb-card-image{aspect-ratio:1.25/1}
+.mb-sticker{position:absolute;z-index:22;width:108px;height:108px;border-radius:50%;display:grid;place-items:center;text-align:center;border:2px solid var(--ink);font:700 11px/1.15 var(--mono);letter-spacing:.06em;text-transform:uppercase;box-shadow:5px 6px 0 var(--ink)}
 .mb-sticker-orange{right:30%;top:14%;background:var(--orange);transform:rotate(11deg)}
 .mb-sticker-blue{left:29%;bottom:16%;background:var(--blue);color:#fff;transform:rotate(-10deg)}
-.mb-cross{position:absolute;z-index:4;font:400 28px/1 var(--serif)}
+.mb-cross{position:absolute;z-index:4;font:400 31px/1 var(--serif)}
 .mb-cross-1{left:46%;top:17%}.mb-cross-2{right:39%;bottom:16%}
 .mb-line{position:absolute;z-index:3;height:1px;background:var(--ink);transform-origin:left center;opacity:.55}
 .mb-line-1{width:170px;left:33%;top:28%;transform:rotate(22deg)}
 .mb-line-2{width:130px;right:32%;bottom:29%;transform:rotate(-28deg)}
 .moodboard-hero::before{content:"";position:absolute;z-index:1;left:50%;top:50%;width:38vw;height:38vw;max-width:560px;max-height:560px;border:1px solid rgba(17,17,15,.22);border-radius:50%;transform:translate(-50%,-50%)}
 .moodboard-hero::after{content:"";position:absolute;z-index:1;left:50%;top:50%;width:25vw;height:25vw;max-width:360px;max-height:360px;border:1px dashed rgba(17,17,15,.25);border-radius:50%;transform:translate(-50%,-50%)}
-
 @media(max-width:900px){
   .moodboard-hero{height:900px;min-height:900px}
   .mb-meta-left,.mb-meta-right{top:82px}
@@ -291,7 +308,7 @@ body.paper-page{background:var(--paper);color:var(--ink)}
   .mb-card-c{width:165px;right:4%;top:17%}.mb-card-d{width:190px;right:14%;bottom:12%}
   .mb-card-e{width:155px;left:4%;bottom:11%}.mb-card-f{width:170px;right:3%;bottom:23%}
   .mb-sticker-orange{right:27%;top:15%;width:82px;height:82px}.mb-sticker-blue{left:25%;bottom:18%;width:82px;height:82px}
-  .mb-title-wrap{width:75vw}.mb-title{font-size:clamp(80px,17vw,145px)}
+  .mb-title-wrap{width:75vw}.mb-title{font-size:clamp(80px,17vw,145px)}.mb-kicker{font-size:11px}.mb-subtitle{font-size:10px}
 }
 @media(max-width:700px){
   .moodboard-hero{height:800px;min-height:800px}
@@ -301,9 +318,9 @@ body.paper-page{background:var(--paper);color:var(--ink)}
   .mb-card-e{width:118px;left:3%;bottom:13%}.mb-card-f{width:125px;right:2%;bottom:27%}
   .mb-sticker{width:68px;height:68px;font-size:7px;box-shadow:3px 4px 0 var(--ink)}
   .mb-sticker-orange{right:19%;top:18%}.mb-sticker-blue{left:20%;bottom:21%}
-  .mb-title-wrap{width:94vw}.mb-kicker{font-size:8px;margin-bottom:12px}.mb-title{font-size:clamp(67px,21vw,120px);text-shadow:5px 7px 0 var(--paper),7px 8px 0 var(--ink)}
-  .mb-title span:last-child{text-shadow:5px 6px 0 var(--ink)}.mb-subtitle{font-size:8px;margin-top:17px}
-  .mb-bottom-left,.mb-bottom-right{bottom:13px;font-size:7px}.mb-bottom-right{display:none}
+  .mb-title-wrap{width:94vw}.mb-kicker{font-size:9px;margin-bottom:12px}.mb-title{font-size:clamp(67px,21vw,120px);text-shadow:5px 7px 0 var(--paper),7px 8px 0 var(--ink)}
+  .mb-title span:last-child{text-shadow:5px 6px 0 var(--ink)}.mb-subtitle{font-size:9px;margin-top:17px;padding:9px 11px}
+  .mb-bottom-left,.mb-bottom-right{bottom:13px;font-size:8px}.mb-bottom-right{display:none}
   .mb-cross-1{left:48%;top:20%}.mb-cross-2{right:42%;bottom:19%}.mb-line-1{width:90px;left:28%;top:30%}.mb-line-2{width:75px;right:27%;bottom:31%}
   .moodboard-hero::before{width:72vw;height:72vw}.moodboard-hero::after{width:48vw;height:48vw}
 }
