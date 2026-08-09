@@ -50,71 +50,68 @@ document.addEventListener('DOMContentLoaded', () => {
     revealEls.forEach(el => el.classList.add('is-visible'));
   }
 
-  /* ---------- Smooth, bounded moodboard mouse movement ---------- */
+  /* ---------- Hero motion: mouse parallax + independent floating ---------- */
   const hero = document.querySelector('.moodboard-hero');
   const cards = hero ? [...hero.querySelectorAll('.mb-card')] : [];
 
-  if (hero && cards.length && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    let targetX = 0, targetY = 0;
-    let currentX = 0, currentY = 0;
-    let pointerX = 0, pointerY = 0;
-    let currentPX = 0, currentPY = 0;
+  if (hero && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const title = hero.querySelector('.mb-title-wrap');
+    const stickers = [...hero.querySelectorAll('.mb-sticker')];
+    const crosses = [...hero.querySelectorAll('.mb-cross')];
+    const lines = [...hero.querySelectorAll('.mb-line')];
+
+    let targetX = 0, targetY = 0, currentX = 0, currentY = 0;
+    let pointerX = 0, pointerY = 0, currentPX = 0, currentPY = 0;
     let raf = 0;
+    const clamp = (v,min,max) => Math.max(min,Math.min(max,v));
 
-    const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+    const updatePointer = (e) => {
+      const r = hero.getBoundingClientRect();
+      const x = clamp((e.clientX-r.left)/r.width-.5,-.5,.5);
+      const y = clamp((e.clientY-r.top)/r.height-.5,-.5,.5);
+      targetX=x; targetY=y; pointerX=x; pointerY=y;
+    };
+    hero.addEventListener('pointermove',updatePointer,{passive:true});
+    hero.addEventListener('pointerleave',()=>{targetX=targetY=pointerX=pointerY=0},{passive:true});
 
-    const render = () => {
-      currentX += (targetX - currentX) * 0.065;
-      currentY += (targetY - currentY) * 0.065;
-      currentPX += (pointerX - currentPX) * 0.07;
-      currentPY += (pointerY - currentPY) * 0.07;
+    const render = (time) => {
+      currentX += (targetX-currentX)*.055;
+      currentY += (targetY-currentY)*.055;
+      currentPX += (pointerX-currentPX)*.06;
+      currentPY += (pointerY-currentPY)*.06;
 
-      cards.forEach((card, index) => {
-        const depth = Number(card.dataset.parallax || 0.1);
-        const x = currentX * depth;
-        const y = currentY * depth;
-
-        // Tiny depth-based tilt, kept deliberately bounded to avoid jitter.
-        const tiltX = clamp(currentPY * depth * -0.075, -3.2, 3.2);
-        const tiltY = clamp(currentPX * depth * 0.075, -3.2, 3.2);
-
-        card.style.setProperty('--mx', `${x.toFixed(2)}px`);
-        card.style.setProperty('--my', `${y.toFixed(2)}px`);
-        card.style.setProperty('--tilt-x', `${tiltX.toFixed(2)}deg`);
-        card.style.setProperty('--tilt-y', `${tiltY.toFixed(2)}deg`);
-
-        // Each card gets a slightly different response for a layered collage feel.
-        const phase = index % 3;
-        const localLift = phase === 0 ? 1 : phase === 1 ? -0.7 : 0.45;
-        card.style.setProperty('--scale', (1 + Math.abs(depth) * 0.012 * localLift).toFixed(4));
+      cards.forEach((card,i)=>{
+        const depth=Number(card.dataset.parallax||.1);
+        const phase=i*.93;
+        const float=Math.sin(time*.00105+phase)*7;
+        const drift=Math.cos(time*.00072+phase)*3;
+        const mx=currentX*150*depth;
+        const my=currentY*120*depth;
+        const rot=currentPX*depth*5;
+        card.style.setProperty('--mx',`${mx.toFixed(2)}px`);
+        card.style.setProperty('--my',`${(my+drift).toFixed(2)}px`);
+        card.style.setProperty('--float',`${float.toFixed(2)}px`);
+        card.style.setProperty('--mouse-rot',`${rot.toFixed(2)}deg`);
       });
 
-      raf = requestAnimationFrame(render);
+      if(title){
+        title.style.transform=`translate3d(${(currentX*20).toFixed(2)}px,${(currentY*14).toFixed(2)}px,0)`;
+      }
+      stickers.forEach((el,i)=>{
+        const phase=i*2.2;
+        el.style.transform=`translate3d(${(currentX*(i? -16:18)).toFixed(2)}px,${(currentY*(i? 12:-10)+Math.sin(time*.001+phase)*6).toFixed(2)}px,0) rotate(${i? -10:11}deg)`;
+      });
+      crosses.forEach((el,i)=>{
+        el.style.transform=`translate3d(${(currentX*(i?18:-14)).toFixed(2)}px,${(currentY*(i?-15:12)+Math.sin(time*.002+i)*5).toFixed(2)}px,0) rotate(${Math.sin(time*.0015+i)*12}deg)`;
+      });
+      lines.forEach((el,i)=>{
+        el.style.translate=`${(currentX*(i?10:-12)).toFixed(2)}px ${(currentY*(i?-7:7)).toFixed(2)}px`;
+      });
+
+      raf=requestAnimationFrame(render);
     };
-
-    const updatePointer = (event) => {
-      const rect = hero.getBoundingClientRect();
-      const px = (event.clientX - rect.left) / rect.width;
-      const py = (event.clientY - rect.top) / rect.height;
-
-      targetX = clamp((px - 0.5) * 78, -39, 39);
-      targetY = clamp((py - 0.5) * 60, -30, 30);
-
-      pointerX = clamp((px - 0.5) * 100, -50, 50);
-      pointerY = clamp((py - 0.5) * 100, -50, 50);
-    };
-
-    hero.addEventListener('pointermove', updatePointer, { passive: true });
-
-    hero.addEventListener('pointerleave', () => {
-      targetX = 0;
-      targetY = 0;
-      pointerX = 0;
-      pointerY = 0;
-    }, { passive: true });
-
-    raf = requestAnimationFrame(render);
-    window.addEventListener('beforeunload', () => cancelAnimationFrame(raf), { once: true });
+    raf=requestAnimationFrame(render);
+    window.addEventListener('beforeunload',()=>cancelAnimationFrame(raf),{once:true});
   }
 
   /* ---------- GSAP hero entrance: never animate card transforms ---------- */
@@ -126,7 +123,6 @@ document.addEventListener('DOMContentLoaded', () => {
       stagger: 0.1,
       ease: 'power3.out',
       delay: 0.15,
-      clearProps: 'transform'
     });
   }
 
